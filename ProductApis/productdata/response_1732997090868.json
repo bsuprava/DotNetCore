@@ -1,0 +1,66 @@
+[
+  {
+    "_id": {
+      "timestamp": 1732992458,
+      "creationTime": "2024-11-30T18:47:38Z"
+    },
+    "men_products": [
+      {
+        "id": 1,
+        "name": "black casual Tshirt",
+        "img": "MenCloth5",
+        "price": 500
+      },
+      {
+        "id": 2,
+        "name": "Black winter jacket",
+        "img": "MenCloth6",
+        "price": 1500
+      },
+      {
+        "id": 3,
+        "name": "Solid Red Tshirt",
+        "img": "MenCloth7",
+        "price": 500
+      },
+      {
+        "id": 4,
+        "name": "black green Tshirt",
+        "img": "MenCloth8",
+        "price": 750
+      }
+    ]
+  },
+  {
+    "_id": {
+      "timestamp": 1732992702,
+      "creationTime": "2024-11-30T18:51:42Z"
+    },
+    "women_products": [
+      {
+        "id": 25,
+        "name": "Blue Long Gown",
+        "img": "WomenCloth1",
+        "price": 500
+      },
+      {
+        "id": 26,
+        "name": "Purple Long Gown",
+        "img": "WomenCloth2",
+        "price": 1500
+      },
+      {
+        "id": 27,
+        "name": "White Jump Suit",
+        "img": "WomenCloth3",
+        "price": 500
+      },
+      {
+        "id": 28,
+        "name": "Yellow Frock",
+        "img": "WomenCloth4",
+        "price": 750
+      }
+    ]
+  }
+]
