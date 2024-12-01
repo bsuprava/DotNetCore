@@ -1,5 +1,7 @@
 using MongoDB.Driver;
+using ProductApis.DbContexts;
 using ProductApis.Repository;
+using ProductApis.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 //IConfiguration configuration = builder.Configuration.GetConnectionString();
@@ -16,6 +18,8 @@ builder.Services.Configure<MongoDatabaseSettings>(builder.Configuration.GetSecti
 builder.Services.AddSingleton<IMongoClient>(m => new MongoClient(builder.Configuration.GetValue<string>("MongoDbSettings:ConnectionString")));
 builder.Services.AddScoped<IMongoDatabase>(m => m.GetRequiredService<IMongoClient>().GetDatabase(builder.Configuration.GetValue<string>("MongoDbSettings:DatabaseName")));
 builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IMongoDbContext,MongoDbContext>();
 
 var app = builder.Build();
 

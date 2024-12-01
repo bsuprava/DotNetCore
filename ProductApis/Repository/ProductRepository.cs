@@ -5,13 +5,13 @@ namespace ProductApis.Repository
 {
     public class ProductRepository
     {
-        private readonly IMongoCollection<Object> _productCollections;
-       // private readonly IMongoCollection<Product> _menProducts;
-       //private readonly IMongoCollection<Product> _womenProducts;
+        private readonly IMongoCollection<Object> _allCollections;
+        
         public ProductRepository(IMongoDatabase mongoDatabase) {
-            _productCollections = mongoDatabase.GetCollection<Object>("products");
+            _allCollections = mongoDatabase.GetCollection<Object>("products");
         }
 
-        public async Task<IEnumerable<Object>> GetAllAsync() => await _productCollections.Find( _ => true).ToListAsync(); 
+        public async Task<IEnumerable<Object>> GetAllAsync() => await _allCollections.Find( _ => true).ToListAsync();
+        
     }
 }
