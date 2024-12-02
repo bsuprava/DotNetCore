@@ -49,5 +49,42 @@ namespace ProductApis.Services
 
             return result.ModifiedCount > 0;
         }
+
+        // patch a document
+        public async Task<long> PatchDocumentAsync(string id, List<Product> products)
+        {
+            //Dictionary<string, List<Product>> keyValuePairs = new Dictionary<string, List<Product>>();
+            //keyValuePairs.Add(id, products.ToBsonDocument());//here products.ToBsonDocument() gives compilation error for list to bson conversion
+
+            //var filter = Builders<BsonDocument>.Filter.Eq(id, new BsonDocument());
+            //var updateDefinition = Builders<BsonDocument>.Update.Combine(
+            //    keyValuePairs.Select(update => Builders<BsonDocument>.Update.Set(update.Key, BsonValue.Create(update.Value)))
+            //);
+
+            //create filter
+            var filter = Builders<BsonDocument>.Filter.Exists(id);
+
+            // Create update definitions
+            var updateDefinitions = new List<UpdateDefinition<BsonDocument>>();
+
+            // Handle lists of Product objects
+            var bsonArray = new BsonArray(products.Select(p => p.ToBsonDocument()));
+            updateDefinitions.Add(Builders<BsonDocument>.Update.Set(id, bsonArray));
+
+            // Combine all update definitions
+            var updateDefinition = Builders<BsonDocument>.Update.Combine(updateDefinitions);
+           
+
+            var result = await _mongoCollection.UpdateOneAsync(filter, updateDefinition);
+            return result.ModifiedCount;
+        }
+
+        //delete document by key name
+        public async Task<DeleteResult> DeleteDocumentsByKey(string keyName)
+        {
+            var filter = Builders<BsonDocument>.Filter.Exists(keyName);
+            var deleteResult = await _mongoCollection.DeleteOneAsync(filter);
+            return deleteResult;
+        }
     }
 }

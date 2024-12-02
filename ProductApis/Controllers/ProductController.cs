@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using ProductApis.DTO;
 using ProductApis.Models;
 using ProductApis.Repository;
@@ -74,6 +75,62 @@ namespace ProductApis.Controllers
         }
 
         /// <summary>
+        /// The HEAD method retrieves metadata (headers) for a resource without the body.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [HttpHead("{key}")]
+        public IActionResult DocumentExistsAsync(string key)
+        {
+            try
+            {
+                var exists = _productService.GetDocumentsByKey(key);
+                if (exists!=null)
+                {
+                    Response.Headers.Add("Resource-Exists", "true");
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// The OPTIONS method returns the supported HTTP methods for the resource.
+        /// </summary>
+        /// <returns></returns>
+        [HttpOptions]
+        public IActionResult Options()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE");
+            return Ok();
+        }
+
+        ///// <summary>
+        ///// The TRACE method is used for debugging purposes. It echoes the request back to the client.
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpTrace]
+        //public IActionResult Trace()
+        //{
+        //    var traceDetails = new
+        //    {
+        //        Method = HttpContext.Request.Method,
+        //        Path = HttpContext.Request.Path,
+        //        Headers = HttpContext.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+        //    };
+
+        //    return Ok(traceDetails);
+        //}
+
+
+        /// <summary>
         /// Create Document under specified collection
         /// </summary>
         /// <param name="newDocument"></param>
@@ -106,7 +163,8 @@ namespace ProductApis.Controllers
                 Dictionary<string, List<Product>> keyValuePairs = new Dictionary<string, List<Product>>();
                 keyValuePairs.Add(createDocumentRequest.Key, createDocumentRequest.Products);
                 await _productService.CreateDocumentAsync(keyValuePairs.ToBsonDocument());
-                return Ok("Document created successfully.");
+                //return Ok("Document created successfully.");
+                return StatusCode(201, "Document created successfully.");
             }
             catch (Exception ex)
             {
@@ -178,6 +236,47 @@ namespace ProductApis.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+
+        [HttpDelete("delete/{key}")]
+        public async Task<IActionResult> DeleteDocument(string key)
+        {
+            try
+            {
+                var result = await _productService.DeleteDocumentsByKey(key);
+                if (result != null && result.IsAcknowledged == true)
+                {
+                    return Ok("Document deleted successfully. Deleted count:" + result.DeletedCount);
+                }                   
+                else
+                    return NotFound($"Document with ID {key} not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        // PATCH: Partial update
+        [HttpPatch("patch/{key}")]
+        public async Task<IActionResult> PatchDocument(string key, [FromBody] List<Product> products)
+        {
+            try
+            {
+               
+                var result = await _productService.PatchDocumentAsync(key,products);
+
+                if (result > 0)
+                    return Ok("Document patched successfully.Patch count:" + result);
+                else
+                    return NotFound("No matching document found.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Patch failed for key "+ key + ", Detail : " + ex.Message);
+                return StatusCode(500, "Patch failed for key " + key);
+            }
+        }
+
 
         //[HttpGet]
         //[Route("GetAlDocuments")]
