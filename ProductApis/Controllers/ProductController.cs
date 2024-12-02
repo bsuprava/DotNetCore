@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using ProductApis.DTO;
+using ProductApis.Models;
 using ProductApis.Repository;
 using ProductApis.Services;
 using System.Text.Json;
@@ -69,6 +71,112 @@ namespace ProductApis.Controllers
 
             }
             else return BadRequest();
+        }
+
+        /// <summary>
+        /// Create Document under specified collection
+        /// </summary>
+        /// <param name="newDocument"></param>
+        /// <returns></returns>
+                 /* Enter below payload format for the endpoint
+                 {
+                  "key": "kids_products",
+                  "products":[
+                           { "id": 11, "name": "black casual Tshirt", "img": "KidCloth1", "price": 500 },
+                           { "id": 12, "name": "Black winter jacket", "img": "KidCloth2", "price": 1500 },
+                           { "id": 13, "name": "black casual Tshirt", "img": "KidCloth3", "price": 500 },
+                           { "id": 14, "name": "Black winter jacket", "img": "KidCloth4", "price": 1500 },
+	                   { "id": 15, "name": "black casual Tshirt", "img": "KidCloth5", "price": 500 },
+                           { "id": 16, "name": "Black winter jacket", "img": "KidCloth6", "price": 1500 },
+	                   { "id": 17, "name": "black casual Tshirt", "img": "KidCloth7", "price": 500 },
+                           { "id": 18, "name": "Black winter jacket", "img": "KidCloth8", "price": 1500 },
+	                   { "id": 19, "name": "black casual Tshirt", "img": "KidCloth9", "price": 500 },
+                           { "id": 10, "name": "Black winter jacket", "img": "KidCloth10", "price": 1500 }
+                  ]
+                }
+
+        After dropping men_products.id index then it creates new document 
+                */
+        [HttpPost]
+        [Route("Create")]
+        public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentRequest createDocumentRequest)
+        {
+            try
+            {
+                Dictionary<string, List<Product>> keyValuePairs = new Dictionary<string, List<Product>>();
+                keyValuePairs.Add(createDocumentRequest.Key, createDocumentRequest.Products);
+                await _productService.CreateDocumentAsync(keyValuePairs.ToBsonDocument());
+                return Ok("Document created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// An optimal way to separate data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("CreateNew")]
+        //public async Task<IActionResult> CreateDocumentByQrerystring([FromBody] CreateDocumentRequest createDocumentRequest)
+        public async Task<IActionResult> CreateDocument([FromQuery] string key, [FromBody] List<Product> products)
+        {
+            try
+            {
+                Dictionary<string, List<Product>> keyValuePairs = new Dictionary<string, List<Product>>();
+                keyValuePairs.Add(key, products);
+                await _productService.CreateDocumentAsync(keyValuePairs.ToBsonDocument());
+                return Ok("Document created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// update document
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        /* payload
+         {
+  "key": "kids_products",
+  "products": [
+           { "id": 11, "name": "White casual Tshirt", "img": "KidCloth1", "price": 500 },
+           { "id": 12, "name": "Black winter jacket", "img": "KidCloth2", "price": 1500 },
+           { "id": 13, "name": "Blue casual Tshirt", "img": "KidCloth3", "price": 500 },
+           { "id": 14, "name": "Black winter jacket", "img": "KidCloth4", "price": 1500 },
+	   { "id": 15, "name": "Dark casual Tshirt", "img": "KidCloth5", "price": 500 },
+           { "id": 16, "name": "Black winter jacket", "img": "KidCloth6", "price": 1500 },
+	   { "id": 17, "name": "Red casual Tshirt", "img": "KidCloth7", "price": 500 },
+           { "id": 18, "name": "Black winter jacket", "img": "KidCloth8", "price": 1500 },
+	   { "id": 19, "name": "Green casual Tshirt", "img": "KidCloth9", "price": 500 },
+           { "id": 10, "name": "Black winter jacket", "img": "KidCloth10", "price": 1500 }
+  ]
+}
+         */
+        [HttpPut("update/{key}")]
+        public async Task<IActionResult> UpdateDocument( string key, [FromBody] List<Product> products)
+        {
+            try
+            {
+                var success = await _productService.UpdateDocumentAsync(key, products);
+                if (success)
+                    return Ok("Document updated successfully.");
+                else
+                    return NotFound($"Document with ID {key} not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
         }
 
         //[HttpGet]
