@@ -55,6 +55,11 @@ namespace ProductApis.Controllers
         [Route("GetAllBsonDoc/{Key}")]
         public async Task<IActionResult> GetAllDocumentsByKeyAsync(string Key)
         {
+            //step1: Input validation
+            if (string.IsNullOrEmpty(Key)) return BadRequest();
+
+            //step2: host filtering  or allowlist implemented in appsettings.json
+
             var docCollections = _productService.GetDocumentsByKey(Key);
             if (docCollections != null)
             {
