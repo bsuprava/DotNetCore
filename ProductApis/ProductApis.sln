@@ -5,6 +5,10 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductApis", "ProductApis.csproj", "{BDCF184C-457F-4F23-8989-A415CD11E66E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyJwtTokenAuthentication", "..\MyJwtTokenAuthentication\MyJwtTokenAuthentication.csproj", "{68972F2B-9D87-4704-894E-E79A7AD42477}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSecurityApis", "..\AppSecurityApis\AppSecurityApis.csproj", "{D849A905-E27F-4413-BF37-EA8219494918}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{BDCF184C-457F-4F23-8989-A415CD11E66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDCF184C-457F-4F23-8989-A415CD11E66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDCF184C-457F-4F23-8989-A415CD11E66E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68972F2B-9D87-4704-894E-E79A7AD42477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68972F2B-9D87-4704-894E-E79A7AD42477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68972F2B-9D87-4704-894E-E79A7AD42477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68972F2B-9D87-4704-894E-E79A7AD42477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D849A905-E27F-4413-BF37-EA8219494918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D849A905-E27F-4413-BF37-EA8219494918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D849A905-E27F-4413-BF37-EA8219494918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D849A905-E27F-4413-BF37-EA8219494918}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
