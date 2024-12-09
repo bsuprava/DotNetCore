@@ -1,0 +1,11 @@
+﻿@ProductMinimalApis_HostAddress = https://localhost:7047
+
+POST {{ProductMinimalApis_HostAddress}}/categories
+
+###
+Content-Type:application/json
+
+{
+"CategoryId":1,
+"Name":"Women",
+}
