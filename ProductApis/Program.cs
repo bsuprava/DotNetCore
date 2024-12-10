@@ -36,6 +36,19 @@ builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IMongoDbContext,MongoDbContext>();
 
+// Add CORS policy for allowing other app server to call from
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetValue<string>("MyReactAppHostUrl")) // React app URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
+
 #endregion
 
 var app = builder.Build();
@@ -76,6 +89,9 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+// Enable CORS
+app.UseCors("AllowReactApp");
 
 app.Run();
 
