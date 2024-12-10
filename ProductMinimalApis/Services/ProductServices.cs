@@ -64,5 +64,28 @@ namespace ProductMinimalApis.Services
             }
 
         }
+
+
+        public ProductResponse? GetProductsByPage(int page = 1, int pagesize = 5 )
+        {
+            var products = _productRepository.GetByPage( pagesize, page);
+            
+            if (products == null)
+                return null;
+
+            return new ProductResponse()
+            {
+                Currentpage= page,
+                PageSize =(int) pagesize,
+                Products= products
+            };
+        }
+
+        public class ProductResponse
+        {
+            public int Currentpage { get; set; }
+            public int PageSize { get; set; }
+            public IList<Products>? Products { get; set; }
+        }
     }
 }

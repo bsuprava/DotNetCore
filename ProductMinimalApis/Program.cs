@@ -39,9 +39,17 @@ app.MapGet("/", () => "Hello World!");
 app.MapGet("/products", (ProductServices productServices) =>
      productServices.GetAllProducts());
 
-//2.Fetch specific Product by Id
+//2a.Fetch specific Product by Id
 app.MapGet("/products/{id}", (int id, ProductServices productServices) =>
      productServices.GetProduct(id));
+
+//2b.Fetch specific Product by page
+app.MapGet("/products/{pageNumber}/{pageSize}", (int pagenumber, int pagesize, ProductServices productServices) =>
+{
+    var result = productServices.GetProductsByPage(pagenumber, pagesize);
+    return result!=null ? Results.Ok(result): Results.BadRequest();
+});
+     
 
 //3. Creates a New Product
 app.MapPost("/products", (Products newproduct, ProductServices productServices) =>
