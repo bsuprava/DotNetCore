@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using ProductApis.DTO;
 using ProductApis.Models;
 using ProductApis.Repository;
 using ProductApis.Services;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace ProductApis.Controllers
 {
@@ -74,6 +75,40 @@ namespace ProductApis.Controllers
                 /*below line of code gives success result in proper json format*/
                 var jsonList = docCollections.Select(doc => doc.ToDictionary()).ToList();
                 return Ok(jsonList);
+
+            }
+            else return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("GetAllBsonDocValue/{Key}")]
+        public async Task<IActionResult> GetAllDocumentsValueAsync(string Key)
+        {
+            //step1: Input validation
+            if (string.IsNullOrEmpty(Key)) return BadRequest();
+
+            //step2: host filtering  or allowlist implemented in appsettings.json
+
+            var docCollections = _productService.GetDocumentsByKey(Key);
+            if (docCollections != null)
+            {
+                /* line no 61 JsonSerializer is unable to serialize Bson data
+                 System.InvalidCastException: Unable to cast object of type 'MongoDB.Bson.BsonObjectId' to type 'MongoDB.Bson.BsonBoolean'. at AsBooleanGetter(Object) 
+                at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)*/
+                //var json = JsonSerializer.Serialize(docCollections); return Ok(json);
+
+                /*below line of code gives success result in serialized text format*/
+                //var jsonList = docCollections.Select(doc => doc.ToJson()).ToList();
+
+                /*below line of code gives success result in proper json format*/
+
+                //var jsonList = docCollections.Select(doc => doc.GetValue(Key).ToJson()).ToList();//working
+                List<BsonValue> docvalue = docCollections.Select(doc => doc.GetValue(Key)).ToList();
+                var pdtdata = docvalue.Select(doc => doc.ToJson()).ToList();
+                dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(pdtdata[0].ToJson()); 
+                //var jsonList = docCollections.Select(doc => doc.GetValue(Key)).ToJson();//working
+                //var products = jsonList.
+                return Ok(json);
 
             }
             else return BadRequest();
